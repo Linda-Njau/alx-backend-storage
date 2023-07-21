@@ -15,7 +15,7 @@ def count_calls(method: Callable) -> Callable:
     def wrapper(self, *args, **kwds):
         """Wrapper function for counting calls"""
         self._redis.incr(key)
-        return method(*args, **kwds)
+        return method(self, *args, **kwds)
     return wrapper
 
 
