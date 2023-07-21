@@ -60,8 +60,9 @@ class Cache:
     def get_int(self, data: str) -> int:
         """Returns a int representation of the given data"""
         return self.get(key, int)
-    def replay(fn: Callable) -> None:
-    '''Displays the call history of a Cache class' method.'''
+    
+def replay(fn: Callable) -> None:
+    """Displays the call history of a Cache class' method."""
     redis_store = getattr(fn.__self__, '_redis', None)
     if not isinstance(redis_store, redis.Redis):
         return
