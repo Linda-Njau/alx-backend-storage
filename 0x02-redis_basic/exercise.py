@@ -60,3 +60,19 @@ class Cache:
     def get_int(self, data: str) -> int:
         """Returns a int representation of the given data"""
         return self.get(key, int)
+    
+    def replay(fn: Callable) -> None:
+    '''Displays the call history of a Cache class' method.'''
+    redis_store = getattr(fn.__self__, '_redis', None)
+    if not isinstance(redis_store, redis.Redis):
+        return
+
+    fxn_name = fn.__qualname__
+    in_key = '{}:inputs'.format(fxn_name)
+    out_key = '{}:outputs'.format(fxn_name)
+
+    fxn_call_count = int(redis_store.get(fxn_name).decode("utf-8") or 0)
+    print('{} was called {} times:'.format(fxn_name, fxn_call_count))
+
+    for fxn_input, fxn_output in zip(redis_store.lrange(in_key, 0, -1), redis_store.lrange(out_key, 0, -1)):
+        print('{}(*{}) -> {}'.format(fxn_name, fxn_input.decode("utf-8"), fxn_output))
